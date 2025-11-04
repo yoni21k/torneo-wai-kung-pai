@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Torneo Sudamericano - Cuenta regresiva</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: url('fondo.gif') center center / cover no-repeat fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      color: white;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(255,0,0,0.4);
+    }
+
+    .countdown {
+      position: absolute;
+      bottom: 2px;
+      left: 49%;
+      transform: translateX(-48%);
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid red;
+      box-shadow: 0 0 15px red, inset 0 0 10px rgba(255,0,0,0.5);
+      padding: 12px 25px;
+      border-radius: 12px;
+      font-family: 'Russo One', sans-serif;
+      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333;
+      animation: glow 2s infinite alternate;
+    }
+
+    #timer {
+      font-size: 24px;
+      color: #ff4444;
+      letter-spacing: 2px;
+    }
+
+    .countdown small {
+      display: block;
+      font-size: 14px;
+      color: #fff;
+      margin-top: 3px;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #ff0000, inset 0 0 5px #ff3333; }
+      to { box-shadow: 0 0 30px #ff0000, inset 0 0 15px #ff3333; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="torneo.jpg" alt="Torneo Sudamericano">
+    <div class="countdown">
+      <div id="timer">0d 00:00:00</div>
+      <small>Hasta el torneo: 9 de Noviembre de 2025 - 09:00</small>
+    </div>
+  </div>
+
+  <!-- Música de fondo -->
+  <audio id="bg-music" src="fondo.mp3" loop></audio>
+  <!-- Sonido de gong -->
+  <audio id="gong-sound" src="gong.mp3"></audio>
+
+  <script>
+    const targetDate = new Date("Nov 9, 2025 09:00:00").getTime();
+    const timerElement = document.getElementById("timer");
+    const bgMusic = document.getElementById('bg-music');
+    const gongSound = document.getElementById('gong-sound');
+    let gongPlayed = false;
+
+    setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance <= 0) {
+        timerElement.innerHTML = "¡EL TORNEO HA COMENZADO!";
+        if (!gongPlayed) {
+          gongSound.play();
+          gongPlayed = true;
+        }
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      timerElement.innerHTML = `${days}d ${hours}:${minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+    }, 1000);
+
+    // 🎵 Reproducir música automáticamente al tocar
+    bgMusic.play().catch(() => {
+      document.body.addEventListener('click', () => {
+        bgMusic.play();
+      }, { once: true });
+    });
+  </script>
+</body>
+</html>
